@@ -15,8 +15,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.set('layout','layout');
-app.engine('html', require('hogan-express'));;
-
+app.engine('html', require('hogan-express'));
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -25,8 +24,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// our routes will be contained in routes/index.js
-var routes = require('./routes/index');
+// our routes will be contained in routes/routes.js
+var routes = require('./server/routes/routes');
 app.use('/', routes);
 
 // catch 404 and forward to error handler
