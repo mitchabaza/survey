@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 
 
 var datastore = require('nedb'),
-    questionsDb = new datastore({filename: '../db/questions', autoload: true}),
-    answersDb = new datastore({filename: '../db/answers', autoload: true});
+    questionsDb = new datastore({filename: './db/questions', autoload: true}),
+    answersDb = new datastore({filename: './db/answers', autoload: true});
 
 var questions = [
     {
@@ -40,19 +41,15 @@ for (var i = 0; i < questions.length; i++) {
     questionsDb.update({id: question.id}, question, {upsert: true});
 }
 
+router.get('/', function (req, res) {
 
-router.get('/api', function (req, res) {
-
-
-    // respond with json data
     res.json({
-        status: "OK"
+        apiStatus: "OK"
     })
 });
 
 
-
-router.get('/api/questions/get', function (req, res) {
+router.get('/questions/get', function (req, res) {
 
 
     questionsDb.find({}, function (err, docs) {
@@ -61,7 +58,7 @@ router.get('/api/questions/get', function (req, res) {
 
 
 });
-router.post('/api/answers/:questionId/add', function (req, res) {
+router.post('/answers/:questionId/add', function (req, res) {
     var answer = {questionId: req.params.questionId, value: req.body.value, timestamp: new Date()}
     answersDb.insert(answer, function (err, docs) {
         return res.json(docs);
@@ -71,21 +68,21 @@ router.post('/api/answers/:questionId/add', function (req, res) {
 });
 
 
-router.get('/api/answers/:questionId/get', function (req, res) {
+router.get('/answers/:questionId/get', function (req, res) {
 
     var requestedId = req.params.questionId;
 
-    answersDb.find({questionId:requestedId}, function (err, docs) {
+    answersDb.find({questionId: requestedId}, function (err, docs) {
         return res.json(docs);
     });
 });
-router.get('/api/answers/:questionId/get', function (req, res) {
+router.get('/answers/:questionId/get', function (req, res) {
 
     var requestedId = req.params.questionId;
 
-    answersDb.find({questionId:requestedId}, function (err, docs) {
+    answersDb.find({questionId: requestedId}, function (err, docs) {
         return res.json(docs);
     });
- });
+});
 
 module.exports = router;
