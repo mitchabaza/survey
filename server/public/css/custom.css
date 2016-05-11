@@ -1,0 +1,32 @@
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+.question-container{
+
+    margin-top:25px;
+}
+.question{
+    margin-bottom:25px;
+    font-weight:  bold;
+    font-size:1.5em;
+
+}
+.answer{
+padding-bottom:10px;
+padding-left:40px;
+
+}
+.answer span{
+margin-left:15px;
+}
+
+.container-fluid {
+    margin-left: 0;
+    margin-right: 0;
+    padding:0;
+}
+

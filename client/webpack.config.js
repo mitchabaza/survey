@@ -1,12 +1,10 @@
-var path = require('path');
-var webpack = require('webpack');
+var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
-  devtool: 'eval',
+  devtool: 'cheap-module-eval-source-map',
   entry: [
-    'webpack-dev-server/client?http://localhost:3030',
-    'webpack/hot/only-dev-server',
-    'react-hot-loader/patch',
+    'webpack-hot-middleware/client',
     './index'
   ],
   output: {
@@ -15,33 +13,22 @@ module.exports = {
     publicPath: '/static/'
   },
   plugins: [
+    
     new webpack.HotModuleReplacementPlugin()
   ],
-  resolve: {
-    alias: {
-
-      'react': path.join(__dirname, 'node_modules', 'react')
-    },
-    extensions: ['', '.js']
-  },
-  resolveLoader: {
-    'fallback': path.join(__dirname, 'node_modules')
-  },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['babel'],
-      exclude: /node_modules/,
-      include: __dirname
-    }, {
-      test: /\.js$/,
-      loaders: ['babel'],
-      exclude: /node_modules/,
-      include: path.join(__dirname, '..', '..', '.\\')
-    }, {
-      test: /\.css?$/,
-      loaders: ['style', 'raw'],
-      include: __dirname
-    }]
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: [ 'babel' ],
+        exclude: /node_modules/,
+        include: __dirname
+      },
+      {
+        test: /\.css?$/,
+        loaders: [ 'style', 'raw' ],
+        include: __dirname
+      }
+    ]
   }
-};
+}
