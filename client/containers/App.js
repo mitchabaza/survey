@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from "react";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import MainSection from "../components/MainSection";
+import Survey from "../components/Survey";
 import * as Actions from "../actions";
 import {answerQuestion} from "../actions";
 
@@ -17,12 +17,12 @@ class App extends Component {
 
     render() {
         const {question} = this.props;
-        const {dispatch} = this.props
+        const {dispatch, surveyResults} = this.props
         var action=bindActionCreators (answerQuestion, dispatch)
         return (
             <div>
                 <Header/>
-                <MainSection question={question} onAnswerSubmitted={action}/>
+                <Survey question={question} surveyResults={surveyResults} onAnswerSubmitted={action}/>
 
             </div>
         )
@@ -31,8 +31,9 @@ class App extends Component {
 
 App.propTypes = {
     question: PropTypes.object.isRequired,
-    surveyResults: PropTypes.object.isRequired,
+    surveyResults: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired
+
 
 }
 
@@ -43,11 +44,5 @@ function mapStateToProps(state) {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(Actions, dispatch)
-
-    }
-}
 
 export default connect(mapStateToProps)(App)

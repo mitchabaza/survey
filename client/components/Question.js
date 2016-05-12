@@ -21,7 +21,7 @@ class Question extends Component {
                 </div>
                 {this.props.answers.map(answer =>
                     <div className="answer" key={answer.value}><input type="radio" disabled={this.props.disabled} onClick={this.handleChange} name="answer"
-                                                   value={answer.value}/><span>{answer.text}</span></div>
+                                                   value={answer.text}/><span>{answer.text}</span></div>
                 )}
             </div>
         )
@@ -33,8 +33,6 @@ Question.propTypes = {
     answers: PropTypes.array.isRequired,
     onAnswerSelected: PropTypes.func.isRequired,
     disabled:PropTypes.bool.isRequired
-
-
 }
 
 export default Question

@@ -20,7 +20,7 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        loaders: [ 'babel' ],
+        loaders: [ 'babel?presets[]=react,presets[]=es2015,plugins[]=transform-class-properties'],
         exclude: /node_modules/,
         include: __dirname
       },

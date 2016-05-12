@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-
+var _ = require("lodash")
 
 var datastore = require('nedb'),
     questionsDb = new datastore({filename: './db/questions', autoload: true}),
@@ -56,7 +56,7 @@ var questions = [
             {text: "Associate degree", value: 5},
             {text: "Bachelor’s degree", value: 6},
             {text: "Master’s degree", value: 7},
-            {text: "Doctorate ", value: 8},
+            {text: "Doctorate", value: 8},
             {text: "SeaOrg", value: 8}
 
         ]
@@ -67,8 +67,7 @@ var questions = [
         answers: [
             {text: "Bozo The Clown", value: 1},
             {text: "The Geico Commercial Caveman", value: 2},
-            {text: "Aaron Rodgers", value: 3},
-
+            {text: "Aaron Rodgers", value: 3}
         ]
     }
 ];
@@ -94,20 +93,121 @@ router.get('/questions/get', function (req, res) {
 
 
 });
-router.get('/question/get', function (req, res) {
+router.get('/questions/:questionId/get', function (req, res) {
+
+    var questionId = parseInt(req.params.questionId)
+    questionsDb.findOne({id: questionId}, function (err, docs) {
+        return res.json(docs);
+    });
+
+});
+router.get('/survey/get', function (req, res) {
 
     var randomQuestion = randomIntFromInterval(questions.length)
-    questionsDb.find({id: randomQuestion}, function (err, docs) {
-        return res.json(docs[0]);
+    questionsDb.findOne({id: randomQuestion}, function (err, docs) {
+        return res.json(docs);
     });
 
+});
+router.get('/answers2/:questionId/summary', function (req, res) {
+    var questionId = parseInt(req.params.questionId)
+    questionsDb.findOne({id: questionId}, function (err, doc) {
+
+        var summary = _.map(_.groupBy(doc.answers, function (b) {
+                return b.text;
+            }
+        ), function (item, key) {
+            return {answer: key}
+        })
+
+        return res.json(summary)
+        answersDb.find({questionId: questionId}, function (err, docs) {
+            var counts = getQuestionResults(docs);
+            return res.json(_.merge(summary, counts))
+        })
+
+
+    })
 
 });
+router.get('/answers/:questionId/summary', function (req, res) {
+    var questionId = parseInt(req.params.questionId)
+
+    computeSurveyResults(questionId, (summary)=>res.json(summary));
+    // retrurn;
+    // questionsDb.findOne({id: questionId}, function (err, doc) {
+    //
+    //     var summary = _.map(_.groupBy(doc.answers, function (b) {
+    //             return b.text;
+    //         }
+    //     ), function (item, key) {
+    //         return {answer: key, percentage: 0, count: 0}
+    //     })
+    //     answersDb.find({questionId: questionId}, function (err, docs) {
+    //         var counts = getQuestionResults(docs);
+    //         summary.forEach(function (item) {
+    //             var sum = _.find(counts, {'answer': item.answer})
+    //             if (sum != null) {
+    //                 item.count = sum.count;
+    //                 item.percentage = sum.percentage;
+    //             }
+    //         })
+    //         return res.json(summary)
+    //     })
+    //
+    //
+    // })
+
+});
+function computeSurveyResults(questionId, onComplete) {
+     
+    questionsDb.findOne({id: questionId}, function (err, doc) {
+        console.log(doc)//generate list of answers
+        var summary = _.map(_.groupBy(doc.answers, function (b) {
+                return b.text;
+            }
+        ), function (item, key) {
+            return {answer: key, percentage: 0, count: 0}
+        })
+        calculateSummary(summary)
+    })
+    function calculateSummary(summary) {
+        answersDb.find({questionId: questionId}, function (err, docs) {
+            var counts = getQuestionResults(docs);
+            summary.forEach(function (item) {
+                var sum = _.find(counts, {'answer': item.answer})
+                if (sum != null) {
+                    item.count = sum.count;
+                    item.percentage = sum.percentage;
+                }
+            })
+            onComplete(summary)
+        })
+    }
+}
+
+function getQuestionResults(docs) {
+
+    var totalCount = docs.length;
+    return _.map(_.groupBy(docs, function (b) {
+        return b.value
+    }), function (item, key) {
+        var size = item.length;
+        return {answer: key, count: size, percentage: Math.round(size / totalCount * 100)}
+    })
+
+
+}
 router.post('/answers/:questionId/add', function (req, res) {
-    var answer = {questionId: req.params.questionId, value: req.body.value, timestamp: new Date()}
+    var answer = {questionId: parseInt(req.params.questionId), value: req.body.value, timestamp: new Date()}
     answersDb.insert(answer, function (err, docs) {
-        return res.json(docs);
+        if (err) {
+            res.json(err)
+        }
     });
+    var questionId = parseInt(req.params.questionId);
+    
+    computeSurveyResults(questionId, (summary)=>res.json(summary));
 
 
 });
@@ -116,15 +216,6 @@ router.post('/answers/:questionId/add', function (req, res) {
 router.get('/answers/:questionId/get', function (req, res) {
 
     var requestedId = req.params.questionId;
-
-    answersDb.find({questionId: requestedId}, function (err, docs) {
-        return res.json(docs);
-    });
-});
-router.get('/answers/:questionId/get', function (req, res) {
-
-    var requestedId = req.params.questionId;
-
     answersDb.find({questionId: requestedId}, function (err, docs) {
         return res.json(docs);
     });

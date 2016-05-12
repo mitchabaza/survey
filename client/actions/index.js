@@ -20,17 +20,16 @@ export function answerQuestion(questionId,answer ) {
 
 export function fetchQuestion(dispatch) {
     return dispatch => {
-        return fetch(`http://${url}/api/question/get`)
+        return fetch(`http://${url}/api/survey/get`)
             .then(response => response.json())
             .then(json => dispatch(receiveQuestion(json)))
     }
 }
 export function receiveQuestion(question){
-    console.log(question)
  return {type:types.RECEIVE_QUESTION, question}
 }
 
-export function displayResults(id, text) {
-  return { type: types.DISPLAY_RESULTS, id, text }
+export function displayResults(surveyResults) {
+  return { type: types.DISPLAY_RESULTS,surveyResults }
 }
 
