@@ -6,7 +6,7 @@ class MainSection extends Component {
     constructor(props, context) {
         super(props, context)
 
-        this.state =  {allowSubmit:false}
+        this.state = {allowSubmit: false}
         this.handleAnswerSelected = this.handleAnswerSelected.bind(this)
     }
 
@@ -16,23 +16,17 @@ class MainSection extends Component {
 
     }
 
-    componentDidMount() {
-
-        setTimeout(this.props.actions.displayQuestion, 1000)
-    }
 
     render() {
 
-        const {questions, actions} = this.props
+        const {question, actions} = this.props
         return (
             <div className="row">
                 <div className="col-lg-4 col-lg-offset-4">
-
-                    {questions.map(question =>
-                        <Question key={question.id} text={question.text} answers={question.answers}
-                                  onAnswerSelected={this.handleAnswerSelected}/>
-                    )}
-                   <button type="button" onClick={this.props.actions.answerQuestion} disabled={!this.state.allowSubmit}  className="btn btn-primary pull-lg-right">Submit Answer</button>
+                   <Question key={question.id} text={question.text} answers={question.answers} onAnswerSelected={this.handleAnswerSelected}/>
+                    <button type="button" onClick={this.props.actions.answerQuestion} disabled={!this.state.allowSubmit}
+                            className="btn btn-primary pull-lg-right">Submit Answer
+                    </button>
 
                 </div>
             </div>
@@ -42,7 +36,7 @@ class MainSection extends Component {
 }
 
 MainSection.propTypes = {
-    questions: PropTypes.array.isRequired,
+    question: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired
 }
 
