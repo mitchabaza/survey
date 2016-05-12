@@ -6,17 +6,18 @@ export default function survey(state = initialState, action) {
     switch (action.type) {
         case RECEIVE_QUESTION:
 
-            var newState=Object.assign({}, state, {questions:action.question});
+            var newState=Object.assign({}, state, {question:action.question});
            
             return newState;
 
 
         case DISPLAY_RESULTS:
-
+            return state
 
         case ANSWER_QUESTION:
-
-
+            var s= Object.assign({}, state);
+            console.log("state " + s)
+            return s;
 
         default:
             return state

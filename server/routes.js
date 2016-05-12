@@ -68,7 +68,7 @@ var questions = [
             {text: "Bozo The Clown", value: 1},
             {text: "The Geico Commercial Caveman", value: 2},
             {text: "Aaron Rodgers", value: 3},
-            
+
         ]
     }
 ];
@@ -98,7 +98,7 @@ router.get('/question/get', function (req, res) {
 
     var randomQuestion = randomIntFromInterval(questions.length)
     questionsDb.find({id: randomQuestion}, function (err, docs) {
-        return res.json(docs);
+        return res.json(docs[0]);
     });
 
 

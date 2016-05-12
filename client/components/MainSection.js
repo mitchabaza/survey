@@ -6,25 +6,35 @@ class MainSection extends Component {
     constructor(props, context) {
         super(props, context)
 
-        this.state = {allowSubmit: false}
-        this.handleAnswerSelected = this.handleAnswerSelected.bind(this)
+        this.state = {allowSubmit: false,questionSubmitted:false}
+         this.handleAnswerSelected = this.handleAnswerSelected.bind(this)
+        this.handleSubmitAnswer = this.handleSubmitAnswer.bind(this);
+        this._allowSubmit = this._allowSubmit.bind(this);
     }
 
-    handleAnswerSelected() {
+    handleAnswerSelected(answerValue) {
 
         this.setState({allowSubmit: true})
+        this.setState({answer: answerValue})
 
     }
 
-
+    handleSubmitAnswer(){
+        this.setState({questionSubmitted: true})
+        this.props.onAnswerSubmitted(this.props.question.id, this.state.answer)
+    }
+    _allowSubmit(){
+         //sada
+        return this.state.allowSubmit && !this.state.questionSubmitted
+    }
     render() {
 
         const {question, actions} = this.props
         return (
             <div className="row">
                 <div className="col-lg-4 col-lg-offset-4">
-                   <Question key={question.id} text={question.text} answers={question.answers} onAnswerSelected={this.handleAnswerSelected}/>
-                    <button type="button" onClick={this.props.actions.answerQuestion} disabled={!this.state.allowSubmit}
+                   <Question disabled={this.state.questionSubmitted} key={question.id} text={question.text} answers={question.answers} onAnswerSelected={this.handleAnswerSelected}/>
+                    <button type="button" ref="button" onClick={this.handleSubmitAnswer} disabled={!this._allowSubmit()}
                             className="btn btn-primary pull-lg-right">Submit Answer
                     </button>
 
@@ -37,7 +47,7 @@ class MainSection extends Component {
 
 MainSection.propTypes = {
     question: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequired
+    onAnswerSubmitted: PropTypes.func.isRequired
 }
 
 export default MainSection

@@ -20,7 +20,7 @@ class Question extends Component {
                     {this.props.text}
                 </div>
                 {this.props.answers.map(answer =>
-                    <div className="answer" key={answer.value}><input type="radio" onClick={this.handleChange} name="answer"
+                    <div className="answer" key={answer.value}><input type="radio" disabled={this.props.disabled} onClick={this.handleChange} name="answer"
                                                    value={answer.value}/><span>{answer.text}</span></div>
                 )}
             </div>
@@ -31,7 +31,8 @@ class Question extends Component {
 Question.propTypes = {
     text: PropTypes.string.isRequired,
     answers: PropTypes.array.isRequired,
-    onAnswerSelected: PropTypes.func.isRequired
+    onAnswerSelected: PropTypes.func.isRequired,
+    disabled:PropTypes.bool.isRequired
 
 
 }

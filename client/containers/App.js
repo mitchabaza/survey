@@ -3,6 +3,8 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import MainSection from "../components/MainSection";
 import * as Actions from "../actions";
+import {answerQuestion} from "../actions";
+
 import Header from "../components/Header";
 import "babel-polyfill";
 class App extends Component {
@@ -14,11 +16,13 @@ class App extends Component {
     }
 
     render() {
-        const {actions, question} = this.props;
+        const {question} = this.props;
+        const {dispatch} = this.props
+        var action=bindActionCreators (answerQuestion, dispatch)
         return (
             <div>
                 <Header/>
-                <MainSection question={question} actions={Actions}/>
+                <MainSection question={question} onAnswerSubmitted={action}/>
 
             </div>
         )
