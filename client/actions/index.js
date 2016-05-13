@@ -1,6 +1,11 @@
 import fetch from "isomorphic-fetch";
 import * as types from "../constants/ActionTypes";
-let url = "localhost:3000"
+
+
+let server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
+let server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
+let url = server_ip_address+":"+server_port
+
 export function answerQuestion(questionId, answer) {
 
     return dispatch => {
@@ -29,7 +34,7 @@ export function receiveQuestion(question) {
     return {type: types.RECEIVE_QUESTION, question}
 }
 
- 
+
 export function displayResults(surveyResults) {
     return {type: types.DISPLAY_RESULTS, surveyResults}
 }

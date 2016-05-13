@@ -3,23 +3,22 @@
 /**
  * Module dependencies.
  */
-
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
 var app = require('./app');
 var debug = require('debug')('node-app:server');
 var http = require('http');
-
+var server = http.createServer(app);
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(server_port || '3000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.

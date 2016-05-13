@@ -81,13 +81,10 @@ for (var i = 0; i < questions.length; i++) {
 
 router.get('/', function (req, res) {
 
-    res.json({
-        apiStatus: "OK"
-    })
+    res.sendfile('index.html', { root: __dirname + "/public/" } );
 });
 
-
-router.get('/questions/get', function (req, res) {
+router.get('/api/questions/get', function (req, res) {
 
 
     questionsDb.find({}, function (err, docs) {
@@ -96,7 +93,7 @@ router.get('/questions/get', function (req, res) {
 
 
 });
-router.get('/questions/:questionId/get', function (req, res) {
+router.get('/api/questions/:questionId/get', function (req, res) {
 
     var questionId = parseInt(req.params.questionId)
     questionsDb.findOne({id: questionId}, function (err, docs) {
@@ -104,7 +101,7 @@ router.get('/questions/:questionId/get', function (req, res) {
     });
 
 });
-router.get('/survey/get', function (req, res) {
+router.get('/api/survey/get', function (req, res) {
 
     var randomQuestion = randomIntFromInterval(questions.length)
     questionsDb.findOne({id: randomQuestion}, function (err, docs) {
@@ -113,7 +110,7 @@ router.get('/survey/get', function (req, res) {
 
 });
 
-router.get('/answers/:questionId/summary', function (req, res) {
+router.get('/api/answers/:questionId/summary', function (req, res) {
     var questionId = parseInt(req.params.questionId)
 
     computeSurveyResults(questionId, (summary)=>res.json(summary));
@@ -158,7 +155,7 @@ function getQuestionResults(docs) {
 
 
 }
-router.post('/answers/:questionId/add', function (req, res) {
+router.post('/api/answers/:questionId/add', function (req, res) {
     var answer = {questionId: parseInt(req.params.questionId), value: req.body.value, timestamp: new Date()}
     answersDb.insert(answer, function (err, docs) {
         if (err) {
@@ -173,7 +170,7 @@ router.post('/answers/:questionId/add', function (req, res) {
 });
 
 
-router.get('/answers/:questionId/get', function (req, res) {
+router.get('/api/answers/:questionId/get', function (req, res) {
 
     var requestedId = parseInt(req.params.questionId);
     answersDb.find({questionId: requestedId}, function (err, docs) {

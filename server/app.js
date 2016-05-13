@@ -20,11 +20,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("/public", express.static(path.join(__dirname, './public')));
+app.use("/static", express.static(path.join(__dirname, './public')));
 
 
 var routes = require('./routes');
-app.use('/api', routes);
+app.use('/', routes);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
