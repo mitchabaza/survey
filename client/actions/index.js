@@ -1,11 +1,24 @@
+"use strict"
+
 import fetch from "isomorphic-fetch";
 import * as types from "../constants/ActionTypes";
 
 
-let server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
-let server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
-let url = server_ip_address+":"+server_port
+let nodeEnv = process.env.NODE_ENV || 'development';
 
+function getUrl() {
+    var url = ""
+    if (nodeEnv == "development") {
+
+        url = 'http://localhost:3000'
+
+    }
+    else {
+        url = "";
+    }
+    console.log("url:" + url)
+    return url;
+}
 export function answerQuestion(questionId, answer) {
 
     return dispatch => {
@@ -17,7 +30,7 @@ export function answerQuestion(questionId, answer) {
             },
             body: JSON.stringify({value: answer})
         }
-        return fetch(`http://${url}/api/answers/${questionId}/add`, options)
+        return fetch(getUrl() + `/api/answers/${questionId}/add`, options)
             .then(response => response.json())
             .then(json => dispatch(displayResults(json)))
     }
@@ -25,7 +38,7 @@ export function answerQuestion(questionId, answer) {
 
 export function fetchQuestion() {
     return dispatch => {
-        return fetch(`http://${url}/api/survey/get`)
+        return fetch(getUrl() + `/api/survey/get`)
             .then(response => response.json())
             .then(json => dispatch(receiveQuestion(json)))
     }

@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
+var server_port = process.env.PORT  || 3000
 var app = require('./app');
 var debug = require('debug')('node-app:server');
 var http = require('http');

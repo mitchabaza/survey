@@ -1,3 +1,5 @@
+"use strict"
+
 import React, {Component, PropTypes} from "react";
 import Question from "./Question";
 import Results from "./Results";
@@ -33,7 +35,7 @@ class Survey extends Component {
 
     render() {
 
-        ClassName
+
         const {question, surveyResults} = this.props
         return (
             <div>

@@ -1,4 +1,4 @@
-
+"use strict"
 export const RECEIVE_QUESTION= 'RECEIVE_QUESTION'
 export const SUBMIT_QUESTION = 'ANSWER_QUESTION'
 export const DISPLAY_RESULTS = "DISPLAY_RESULTS"

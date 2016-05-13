@@ -10,7 +10,13 @@ module.exports = {
     path: path.join(__dirname, '../server/public/'),
     filename: 'bundle.js' 
   },
-
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': '"production"'
+      }
+    })
+  ],
   module: {
     loaders: [
       {

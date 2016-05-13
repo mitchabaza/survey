@@ -1,4 +1,6 @@
-import {RECEIVE_QUESTION, TRY_AGAIN,DISPLAY_RESULTS, SUBMIT_QUESTION} from "../constants/ActionTypes";
+"use strict"
+
+import {RECEIVE_QUESTION,DISPLAY_RESULTS, SUBMIT_QUESTION} from "../constants/ActionTypes";
 
 const initialState = {question:{text:"",id:"", answers:[]},surveyResults:[],   isLoading:false}
 
