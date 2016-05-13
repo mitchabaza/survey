@@ -63,14 +63,14 @@ var questions = [
         ]
     },
     {
-        text: 'Which statement best describes the state of the U.S. economy?',
+        text: 'Which statement best describes the current state of the U.S. economy?',
         id: 6,
         answers: [
-            {text: "It's doing great!", value: 1},
-            {text: "It's tanking", value: 2},
+            {text: "It's growing rapidly", value: 1},
+            {text: "It's tanking big time", value: 2},
             {text: "Steady as she goes", value: 3},
-            {text: "Energy and Commodity asset deleveraging is leading to an increase in the need for liquidity, ", value:5},
-            {text:"The sharp deterioration in riskier assets is emblematic of a change to monetary policy mix that is upsetting the over-reliance on cheap credit.", value:6}
+            {text: "Energy and Commodity asset deleveraging is leading to an increase in the need for liquidity", value:5},
+            {text:"The sharp deterioration in riskier assets is emblematic of a change to monetary policy mix that is upsetting the over-reliance on cheap credit", value:6}
         ]
     }
 ];

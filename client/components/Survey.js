@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from "react";
 import Question from "./Question";
 import Results from "./Results";
-
+import ClassName from "classnames"
 class Survey extends Component {
     constructor(props, context) {
         super(props, context)
@@ -9,6 +9,7 @@ class Survey extends Component {
         this.state = {allowSubmit: false, questionSubmitted: false}
         this.handleAnswerSelected = this.handleAnswerSelected.bind(this)
         this.handleSubmitAnswer = this.handleSubmitAnswer.bind(this);
+        this.handleTryAgain = this.handleTryAgain.bind(this);
         this._allowSubmit = this._allowSubmit.bind(this);
     }
 
@@ -23,13 +24,17 @@ class Survey extends Component {
         this.setState({questionSubmitted: true})
         this.props.onAnswerSubmitted(this.props.question.id, this.state.answer)
     }
-
+    handleTryAgain() {
+        this.props.onTryAgain()
+    }
     _allowSubmit() {
         return this.state.allowSubmit && !this.state.questionSubmitted
     }
 
     render() {
-        const {question, actions, surveyResults} = this.props
+
+        ClassName
+        const {question, surveyResults} = this.props
         return (
             <div>
                 <div className="row">
@@ -37,9 +42,7 @@ class Survey extends Component {
                         <Question disabled={this.state.questionSubmitted} key={question.id} text={question.text}
                                   answers={question.answers} onAnswerSelected={this.handleAnswerSelected}/>
                         <div className="p-a-1">
-                            <button type="button" ref="button" style={{display:"none"}}
-                                    className="btn btn-primary pull-lg-right">Try Again!
-                            </button>
+                           
                             <button type="button" ref="button" onClick={this.handleSubmitAnswer}
                                     disabled={!this._allowSubmit()}
                                     className="btn btn-primary pull-lg-right">Submit Answer

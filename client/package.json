@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "Redux TodoMVC example",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "prod":  "webpack --config webpack.prod.config.js"
   },
   "repository": {
     "type": "git",
