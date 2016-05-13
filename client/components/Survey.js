@@ -36,10 +36,16 @@ class Survey extends Component {
                     <div className="col-lg-4 col-lg-offset-4">
                         <Question disabled={this.state.questionSubmitted} key={question.id} text={question.text}
                                   answers={question.answers} onAnswerSelected={this.handleAnswerSelected}/>
-                        <button type="button" ref="button" onClick={this.handleSubmitAnswer}
-                                disabled={!this._allowSubmit()}
-                                className="btn btn-primary pull-lg-right">Submit Answer
-                        </button>
+                        <div className="p-a-1">
+                            <button type="button" ref="button" style={{display:"none"}}
+                                    className="btn btn-primary pull-lg-right">Try Again!
+                            </button>
+                            <button type="button" ref="button" onClick={this.handleSubmitAnswer}
+                                    disabled={!this._allowSubmit()}
+                                    className="btn btn-primary pull-lg-right">Submit Answer
+                            </button>
+
+                        </div>
                         <Results surveyResults={surveyResults}/>
 
                     </div>

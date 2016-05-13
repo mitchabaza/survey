@@ -1,6 +1,6 @@
 import {RECEIVE_QUESTION, DISPLAY_RESULTS, ANSWER_QUESTION} from "../constants/ActionTypes";
 
-const initialState = {question:{text:"",id:"", answers:[]},surveyResults:[]}
+const initialState = {question:{text:"",id:"", answers:[]},surveyResults:[],allowNext:false}
 
 export default function survey(state = initialState, action) {
     switch (action.type) {
@@ -10,7 +10,7 @@ export default function survey(state = initialState, action) {
 
 
         case DISPLAY_RESULTS:
-            return  Object.assign({}, state, {surveyResults:action.surveyResults});
+            return  Object.assign({}, state, {surveyResults:action.surveyResults}, {allowNext:true});
 
         default:
             return state

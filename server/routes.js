@@ -15,17 +15,18 @@ var questions = [
             {text: "1", value: 1},
             {text: "2", value: 2},
             {text: "3", value: 3},
-            {text: "4 or more", value: 4}
+            {text: "4", value: 4},
+            {text: "5 if you include the poltergeist in the attic", value: 5}
+
         ]
     },
     {
-        text: 'Are you considering buying a car in the next six months?',
+        text: 'Are you planning on buying a car in the next six months?',
         id: 2,
         answers: [
             {text: "Yes", value: 1},
             {text: "No", value: 2},
-            {text: "Maybe", value: 3},
-            {text: "None of your business", value: 4}
+            {text: "Maybe", value: 3}
 
         ]
     },
@@ -34,7 +35,7 @@ var questions = [
         id: 3,
         answers: [
             {text: "Bozo The Clown", value: 1},
-            {text: "The Geico Commercial Caveman", value: 2},
+            {text: "William Shatner", value: 2},
             {text: "Aaron Rodgers", value: 3}
         ]
     },
@@ -57,17 +58,19 @@ var questions = [
             {text: "Bachelor’s degree", value: 6},
             {text: "Master’s degree", value: 7},
             {text: "Doctorate", value: 8},
-            {text: "SeaOrg", value: 8}
+            {text: "Clown College", value: 9},
 
         ]
     },
     {
-        text: 'Which of the following people would you consider voting for in the 2016 presidential election?',
+        text: 'Which statement best describes the state of the U.S. economy?',
         id: 6,
         answers: [
-            {text: "Bozo The Clown", value: 1},
-            {text: "The Geico Commercial Caveman", value: 2},
-            {text: "Aaron Rodgers", value: 3}
+            {text: "It's doing great!", value: 1},
+            {text: "It's tanking", value: 2},
+            {text: "Steady as she goes", value: 3},
+            {text: "Energy and Commodity asset deleveraging is leading to an increase in the need for liquidity, ", value:5},
+            {text:"The sharp deterioration in riskier assets is emblematic of a change to monetary policy mix that is upsetting the over-reliance on cheap credit.", value:6}
         ]
     }
 ];
@@ -109,60 +112,17 @@ router.get('/survey/get', function (req, res) {
     });
 
 });
-router.get('/answers2/:questionId/summary', function (req, res) {
-    var questionId = parseInt(req.params.questionId)
-    questionsDb.findOne({id: questionId}, function (err, doc) {
 
-        var summary = _.map(_.groupBy(doc.answers, function (b) {
-                return b.text;
-            }
-        ), function (item, key) {
-            return {answer: key}
-        })
-
-        return res.json(summary)
-        answersDb.find({questionId: questionId}, function (err, docs) {
-            var counts = getQuestionResults(docs);
-            return res.json(_.merge(summary, counts))
-        })
-
-
-    })
-
-});
 router.get('/answers/:questionId/summary', function (req, res) {
     var questionId = parseInt(req.params.questionId)
 
     computeSurveyResults(questionId, (summary)=>res.json(summary));
-    // retrurn;
-    // questionsDb.findOne({id: questionId}, function (err, doc) {
-    //
-    //     var summary = _.map(_.groupBy(doc.answers, function (b) {
-    //             return b.text;
-    //         }
-    //     ), function (item, key) {
-    //         return {answer: key, percentage: 0, count: 0}
-    //     })
-    //     answersDb.find({questionId: questionId}, function (err, docs) {
-    //         var counts = getQuestionResults(docs);
-    //         summary.forEach(function (item) {
-    //             var sum = _.find(counts, {'answer': item.answer})
-    //             if (sum != null) {
-    //                 item.count = sum.count;
-    //                 item.percentage = sum.percentage;
-    //             }
-    //         })
-    //         return res.json(summary)
-    //     })
-    //
-    //
-    // })
+
 
 });
 function computeSurveyResults(questionId, onComplete) {
-     
+
     questionsDb.findOne({id: questionId}, function (err, doc) {
-        console.log(doc)//generate list of answers
         var summary = _.map(_.groupBy(doc.answers, function (b) {
                 return b.text;
             }
@@ -206,7 +166,7 @@ router.post('/answers/:questionId/add', function (req, res) {
         }
     });
     var questionId = parseInt(req.params.questionId);
-    
+
     computeSurveyResults(questionId, (summary)=>res.json(summary));
 
 
@@ -215,7 +175,7 @@ router.post('/answers/:questionId/add', function (req, res) {
 
 router.get('/answers/:questionId/get', function (req, res) {
 
-    var requestedId = req.params.questionId;
+    var requestedId = parseInt(req.params.questionId);
     answersDb.find({questionId: requestedId}, function (err, docs) {
         return res.json(docs);
     });
