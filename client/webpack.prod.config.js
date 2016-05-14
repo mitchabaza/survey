@@ -10,12 +10,17 @@ module.exports = {
     path: path.join(__dirname, '../public/'),
     filename: 'bundle.js' 
   },
+
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': '"production"'
       }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true
     })
+
   ],
   module: {
     loaders: [
