@@ -31,12 +31,14 @@ var questions = [
         ]
     },
     {
-        text: 'Which of the following presidential candidates would you consider voting for in 2016?',
+        text: 'Which of the following people would you consider voting for in a presidential election?',
         id: 3,
         answers: [
             {text: "Bozo The Clown", value: 1},
             {text: "William Shatner", value: 2},
-            {text: "Aaron Rodgers", value: 3}
+            {text: "Aaron Rodgers", value: 3},
+            {text: "The Rock", value: 4}
+
         ]
     },
     {

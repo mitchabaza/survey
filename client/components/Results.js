@@ -9,7 +9,7 @@ export default class Results extends React.Component {
             return null;
         }
         return <div className="results">
-            <h4>Results</h4>
+            <div className="question">Survey Results</div>
             {surveyResults.map(result => {
                     var width = result.percentage + "%";
                     return <div key={result.answer}>{result.answer}

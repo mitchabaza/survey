@@ -9,20 +9,20 @@ let nodeEnv = process.env.NODE_ENV || 'development';
 function getUrl() {
     var url = ""
     if (nodeEnv == "development") {
-
         url = 'http://localhost:3000'
-
     }
     else {
         url = "";
     }
-    console.log("url:" + url)
+
     return url;
 }
 export function answerQuestion(questionId, answer) {
 
-    return dispatch => {
-
+    return function (dispatch) {
+        dispatch(
+            {type: types.SUBMIT_QUESTION}
+        )
         var options = {
             method: 'post',
             headers: {
@@ -43,11 +43,26 @@ export function fetchQuestion() {
             .then(json => dispatch(receiveQuestion(json)))
     }
 }
+
+
 export function receiveQuestion(question) {
     return {type: types.RECEIVE_QUESTION, question}
 }
+export function answerSelected() {
+    return {type: types.ANSWER_SELECTED}
+}
 
+export function tryAgain() {
 
+    return function (dispatch) {
+
+        dispatch(
+            {type: types.TRY_AGAIN}
+        )
+        dispatch(fetchQuestion())
+    }
+
+}
 export function displayResults(surveyResults) {
     return {type: types.DISPLAY_RESULTS, surveyResults}
 }
