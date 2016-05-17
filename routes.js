@@ -183,7 +183,7 @@ function computeSurveyResults(questionId) {
 }
 
 function getQuestionResults(answers) {
-
+  
     var totalCount = answers.length;
     return _.map(_.groupBy(answers, function (b) {
         return b.value
