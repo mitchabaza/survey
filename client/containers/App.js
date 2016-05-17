@@ -5,13 +5,13 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import Survey from "../components/Survey";
 import * as Actions from "../actions";
-import {answerQuestion, tryAgain,answerSelected} from "../actions";
+import {answerQuestion, nextQuestion,answerSelected} from "../actions";
 import Header from "../components/Header";
 import "babel-polyfill";
 class App extends Component {
     constructor(props, context) {
         super(props, context)
-        this.handleTryAgainClick = this.handleTryAgainClick.bind(this)
+        this.handleNextQuestionClick = this.handleNextQuestionClick.bind(this)
     }
 
     componentDidMount() {
@@ -20,9 +20,9 @@ class App extends Component {
 
     }
 
-    handleTryAgainClick() {
+    handleNextQuestionClick() {
 
-        this.props.dispatch(tryAgain())
+        this.props.dispatch(nextQuestion())
 
     }
 
@@ -34,10 +34,9 @@ class App extends Component {
             <div>
                 <Header/>
                 <Survey question={question} surveyResults={surveyResults}
-                        onTryAgain={bindActionCreators(tryAgain,this.props.dispatch)}
+                        onNextQuestion={bindActionCreators(nextQuestion,this.props.dispatch)}
                         onAnswerSubmitted={bindActionCreators (answerQuestion, this.props.dispatch) }
                         onAnswerSelected={bindActionCreators (answerSelected, this.props.dispatch) }
-
                         pageState={this.props.pageState}/>
 
             </div>
@@ -50,6 +49,7 @@ App.propTypes = {
     question: PropTypes.object.isRequired,
     surveyResults: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired
+
 
 
 }

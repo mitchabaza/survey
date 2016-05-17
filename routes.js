@@ -55,7 +55,7 @@ var questions = [
         text: 'What is the highest degree or level of school you have completed?',
         id: 5,
         answers: [
-            {text: "High school graduate", value: 2},
+            {text: "High school diploma", value: 2},
             {text: "Associate degree", value: 5},
             {text: "Bachelor’s degree", value: 6},
             {text: "Master’s degree", value: 7},
@@ -71,10 +71,38 @@ var questions = [
             {text: "It's growing rapidly", value: 1},
             {text: "It's tanking big time", value: 2},
             {text: "Steady as she goes", value: 3},
-            {text: "Energy and Commodity asset deleveraging is leading to an increase in the need for liquidity", value:5},
-            {text:"The sharp deterioration in riskier assets is emblematic of a change to monetary policy mix that is upsetting the over-reliance on cheap credit", value:6}
+            {
+                text: "Energy and Commodity asset deleveraging is leading to an increase in the need for liquidity",
+                value: 5
+            },
+            {
+                text: "The sharp deterioration in riskier assets is emblematic of a change to monetary policy mix that is upsetting the over-reliance on cheap credit",
+                value: 6
+            }
+        ]
+    },
+    {
+        text: 'Have you ever been a member of or in any way associated (either directly or indirectly) with the Communist Party?',
+        id: 7,
+        answers: [
+            {text: "Yes", value: 1},
+            {text: "No", value: 2},
+            {text: "I don't remember", value: 3}
+        ]
+    },
+    {
+        text: 'What range includes your age?',
+        id: 8,
+        answers: [
+            {text: "18 or less", value: 1},
+            {text: "18 to 24", value: 2},
+            {text: "25 - 34", value: 3},
+            {text: "35 - 44", value: 4},
+            {text: "45 - 54", value: 5},
+            {text: "55 or older", value: 6}
         ]
     }
+
 ];
 for (var i = 0; i < questions.length; i++) {
     var question = questions[i];
@@ -83,7 +111,7 @@ for (var i = 0; i < questions.length; i++) {
 
 router.get('/', function (req, res) {
 
-    res.sendfile('index.html', { root: __dirname + "/public/" } );
+    res.sendfile('index.html', {root: __dirname + "/public/"});
 });
 
 router.get('/api/questions/get', function (req, res) {
@@ -103,14 +131,20 @@ router.get('/api/questions/:questionId/get', function (req, res) {
     });
 
 });
-router.get('/api/survey/get', function (req, res) {
+router.get('/api/survey/get/:priorQuestionId?', function (req, res) {
 
-    var randomQuestion = randomIntFromInterval(questions.length)
-    questionsDb.findOne({id: randomQuestion}, function (err, docs) {
-        return res.json(docs);
-    });
+        var questionId = req.params.priorQuestionId || 0;
+        console.log(questionId)
+        questionId++;
+        if (questionId > questions.length - 1) {
+            questionId = 1;
+        }
+        questionsDb.findOne({id: questionId}, function (err, docs) {
+            return res.json(docs);
+        });
 
-});
+    }
+);
 
 router.get('/api/answers/:questionId/summary', function (req, res) {
     var questionId = parseInt(req.params.questionId)
@@ -120,7 +154,7 @@ router.get('/api/answers/:questionId/summary', function (req, res) {
 
 });
 function computeSurveyResults(questionId, onComplete) {
-
+    console.log()
     questionsDb.findOne({id: questionId}, function (err, doc) {
         var summary = _.map(_.groupBy(doc.answers, function (b) {
                 return b.text;
@@ -180,7 +214,7 @@ router.get('/api/answers/:questionId/get', function (req, res) {
     });
 });
 
-function randomIntFromInterval(max) {
+function getRandomInt(max) {
     return Math.floor(Math.random() * max + 1)
 }
 module.exports = router;

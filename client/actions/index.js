@@ -14,7 +14,6 @@ function getUrl() {
     else {
         url = "";
     }
-
     return url;
 }
 export function answerQuestion(questionId, answer) {
@@ -36,9 +35,11 @@ export function answerQuestion(questionId, answer) {
     }
 }
 
-export function fetchQuestion() {
+export function fetchQuestion(previousQuestion) {
+    previousQuestion=previousQuestion||null;
     return dispatch => {
-        return fetch(getUrl() + `/api/survey/get`)
+        var url= previousQuestion!=null?getUrl() + `/api/survey/get/${previousQuestion}`:getUrl() + `/api/survey/get/`
+        return fetch(url)
             .then(response => response.json())
             .then(json => dispatch(receiveQuestion(json)))
     }
@@ -48,18 +49,17 @@ export function fetchQuestion() {
 export function receiveQuestion(question) {
     return {type: types.RECEIVE_QUESTION, question}
 }
-export function answerSelected() {
-    return {type: types.ANSWER_SELECTED}
+export function answerSelected(answer) {
+    return {type: types.ANSWER_SELECTED, answer }
 }
 
-export function tryAgain() {
-
+export function nextQuestion(previousQuestion) {
     return function (dispatch) {
 
         dispatch(
-            {type: types.TRY_AGAIN}
+            {type: types.NEXT_QUESTION}
         )
-        dispatch(fetchQuestion())
+        dispatch(fetchQuestion(previousQuestion))
     }
 
 }
