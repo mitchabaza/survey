@@ -1,10 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
+var Promise = require("bluebird")
+
 var _ = require("lodash")
 
-var datastore = require('nedb'),
-    questionsDb = new datastore({filename: './db/questions', autoload: true}),
+
+var datastore = require('nedb');
+
+Promise.promisifyAll(datastore.prototype);
+
+var questionsDb = new datastore({filename: './db/questions', autoload: true}),
     answersDb = new datastore({filename: './db/answers', autoload: true});
 
 var questions = [
@@ -126,63 +132,60 @@ router.get('/api/questions/get', function (req, res) {
 router.get('/api/questions/:questionId/get', function (req, res) {
 
     var questionId = parseInt(req.params.questionId)
-    questionsDb.findOne({id: questionId}, function (err, docs) {
-        return res.json(docs);
-    });
+    questionsDb.findOneAsync({id: questionId}).then((docs)  =>res.json(docs));
 
 });
 router.get('/api/survey/get/:priorQuestionId?', function (req, res) {
 
         var questionId = req.params.priorQuestionId || 0;
-        console.log(questionId)
         questionId++;
         if (questionId > questions.length - 1) {
             questionId = 1;
         }
-        questionsDb.findOne({id: questionId}, function (err, docs) {
-            return res.json(docs);
-        });
+        questionsDb.findOneAsync({id: questionId}).then((docs)=>  res.json(docs));
 
     }
 );
 
-router.get('/api/answers/:questionId/summary', function (req, res) {
+router.get('/api/answers/:questionId/summary', function (req, res) {audittrail
     var questionId = parseInt(req.params.questionId)
-
-    computeSurveyResults(questionId, (summary)=>res.json(summary));
-
-
+    computeSurveyResults(questionId).then((s)=>res.json(s));
 });
-function computeSurveyResults(questionId, onComplete) {
-    console.log()
-    questionsDb.findOne({id: questionId}, function (err, doc) {
-        var summary = _.map(_.groupBy(doc.answers, function (b) {
-                return b.text;
-            }
-        ), function (item, key) {
-            return {answer: key, percentage: 0, count: 0}
+
+function computeSurveyResults(questionId) {
+    var summaryDoc = null;
+
+    return questionsDb.findOneAsync({id: questionId})
+        .then(function (doc) {
+            return _.map(_.groupBy(doc.answers, function (b) {
+                    return b.text;
+                }
+            ), function (item, key) {
+                return {answer: key, percentage: 0, count: 0}
+            })
         })
-        calculateSummary(summary)
-    })
-    function calculateSummary(summary) {
-        answersDb.find({questionId: questionId}, function (err, docs) {
-            var counts = getQuestionResults(docs);
-            summary.forEach(function (item) {
+        .then(function (summary) {
+            summaryDoc = summary;
+            return answersDb.findAsync({questionId: questionId})
+        })
+        .then(function (answers) {
+            var counts = getQuestionResults(answers)
+            summaryDoc.forEach(function (item) {
                 var sum = _.find(counts, {'answer': item.answer})
                 if (sum != null) {
                     item.count = sum.count;
                     item.percentage = sum.percentage;
                 }
             })
-            onComplete(summary)
+            return summaryDoc;
         })
-    }
+
 }
 
-function getQuestionResults(docs) {
+function getQuestionResults(answers) {
 
-    var totalCount = docs.length;
-    return _.map(_.groupBy(docs, function (b) {
+    var totalCount = answers.length;
+    return _.map(_.groupBy(answers, function (b) {
         return b.value
     }), function (item, key) {
         var size = item.length;
@@ -192,16 +195,12 @@ function getQuestionResults(docs) {
 
 }
 router.post('/api/answers/:questionId/add', function (req, res) {
-    var answer = {questionId: parseInt(req.params.questionId), value: req.body.value, timestamp: new Date()}
-    answersDb.insert(answer, function (err, docs) {
-        if (err) {
+    var answer = {questionId: parseInt(req.params.questionId), value: req.body.value, timestamp: new Date(), buzz:req.body.value}
+    answersDb.insertAsync(answer).catch(function(e) {
             res.json(err)
-        }
     });
     var questionId = parseInt(req.params.questionId);
-
-    computeSurveyResults(questionId, (summary)=>res.json(summary));
-
+    computeSurveyResults(questionId).then( (summary)=>res.json(summary));
 
 });
 
@@ -209,9 +208,7 @@ router.post('/api/answers/:questionId/add', function (req, res) {
 router.get('/api/answers/:questionId/get', function (req, res) {
 
     var requestedId = parseInt(req.params.questionId);
-    answersDb.find({questionId: requestedId}, function (err, docs) {
-        return res.json(docs);
-    });
+    answersDb.findAsync({questionId: requestedId}).then((d)=> res.json(d));
 });
 
 function getRandomInt(max) {
